@@ -1,5 +1,5 @@
 {
-  "openapi": "3.1.0",
+  "openapi": "3.0.2",
   "info": {
     "title": "BM25 Encoder API",
     "description": "API for BM25 text encoding and sparse vector generation",

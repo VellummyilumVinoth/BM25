@@ -16,7 +16,7 @@
 
 version: 0.1
 endpoints:
-  - name: BM25 API
+  - name: BM25
     port: 8000
     type: REST
     networkVisibility: Public
