@@ -159,6 +159,19 @@ async def encode_queries(request: EncodeRequest):
         logger.error(f"Error encoding queries: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to encode queries: {str(e)}")
 
+@app.delete("/model/reset", response_model=StatusResponse)
+async def reset_model():
+    """Reset/clear the current model"""
+    global bm25_encoder
+
+    bm25_encoder = None
+
+    return StatusResponse(
+        status="success",
+        message="Model reset successfully",
+        is_fitted=False
+    )
+
 if __name__ == "__main__":
     # For local development
     uvicorn.run(
