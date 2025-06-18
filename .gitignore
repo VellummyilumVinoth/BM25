@@ -11,5 +11,5 @@ __pycache__/
 # Build directory
 build/
 
-# IDE settings (for JetBrains products like PyCharm)
+# IDE settings
 .idea/
