@@ -1,0 +1,375 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "BM25 Encoder API",
+    "description": "API for BM25 text encoding and sparse vector generation",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/fit": {
+      "post": {
+        "summary": "Fit Bm25",
+        "description": "Fit BM25 encoder with a corpus of documents",
+        "operationId": "fit_bm25_fit_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/encode/documents": {
+      "post": {
+        "summary": "Encode Documents",
+        "description": "Encode documents to sparse vectors",
+        "operationId": "encode_documents_encode_documents_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncodeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EncodeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/encode/queries": {
+      "post": {
+        "summary": "Encode Queries",
+        "description": "Encode queries to sparse vectors",
+        "operationId": "encode_queries_encode_queries_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EncodeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EncodeResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BM25Config": {
+        "properties": {
+          "b": {
+            "type": "number",
+            "maximum": 1,
+            "minimum": 0,
+            "title": "B",
+            "description": "Length normalization parameter",
+            "default": 0.75
+          },
+          "k1": {
+            "type": "number",
+            "minimum": 0,
+            "title": "K1",
+            "description": "Term frequency normalization parameter",
+            "default": 1.2
+          },
+          "lower_case": {
+            "type": "boolean",
+            "title": "Lower Case",
+            "description": "Whether to lowercase tokens",
+            "default": true
+          },
+          "remove_punctuation": {
+            "type": "boolean",
+            "title": "Remove Punctuation",
+            "description": "Whether to remove punctuation",
+            "default": true
+          },
+          "remove_stopwords": {
+            "type": "boolean",
+            "title": "Remove Stopwords",
+            "description": "Whether to remove stopwords",
+            "default": true
+          },
+          "stem": {
+            "type": "boolean",
+            "title": "Stem",
+            "description": "Whether to stem tokens",
+            "default": true
+          },
+          "language": {
+            "type": "string",
+            "title": "Language",
+            "description": "Language for stopwords and stemmer",
+            "default": "english"
+          }
+        },
+        "type": "object",
+        "title": "BM25Config"
+      },
+      "EncodeRequest": {
+        "properties": {
+          "texts": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ],
+            "title": "Texts",
+            "description": "Text(s) to encode"
+          }
+        },
+        "type": "object",
+        "required": [
+          "texts"
+        ],
+        "title": "EncodeRequest"
+      },
+      "EncodeResponse": {
+        "properties": {
+          "vectors": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SparseVector"
+              },
+              {
+                "items": {
+                  "$ref": "#/components/schemas/SparseVector"
+                },
+                "type": "array"
+              }
+            ],
+            "title": "Vectors",
+            "description": "Encoded sparse vectors"
+          }
+        },
+        "type": "object",
+        "required": [
+          "vectors"
+        ],
+        "title": "EncodeResponse"
+      },
+      "FitRequest": {
+        "properties": {
+          "corpus": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Corpus",
+            "description": "List of documents to fit BM25 with"
+          },
+          "config": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BM25Config"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "BM25 configuration"
+          }
+        },
+        "type": "object",
+        "required": [
+          "corpus"
+        ],
+        "title": "FitRequest"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "SparseVector": {
+        "properties": {
+          "indices": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Indices",
+            "description": "Token indices"
+          },
+          "values": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Values",
+            "description": "Token weights"
+          }
+        },
+        "type": "object",
+        "required": [
+          "indices",
+          "values"
+        ],
+        "title": "SparseVector"
+      },
+      "StatusResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "is_fitted": {
+            "type": "boolean",
+            "title": "Is Fitted",
+            "default": false
+          },
+          "n_docs": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Docs"
+          },
+          "avgdl": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avgdl"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "message"
+        ],
+        "title": "StatusResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
