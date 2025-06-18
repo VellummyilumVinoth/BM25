@@ -1,0 +1,15 @@
+# Python virtual environment
+venv/
+.venv/
+
+# Environment variables
+.env
+
+# Python cache files
+__pycache__/
+
+# Build directory
+build/
+
+# IDE settings (for JetBrains products like PyCharm)
+.idea/
